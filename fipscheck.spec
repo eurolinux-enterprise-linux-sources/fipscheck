@@ -1,7 +1,7 @@
 Summary:	A library for integrity verification of FIPS validated modules
 Name:		fipscheck
 Version:	1.2.0
-Release:	4.1%{?dist}
+Release:	5%{?dist}
 License:	BSD
 Group:		System Environment/Libraries
 # This is a Red Hat maintained package which is specific to
@@ -12,6 +12,9 @@ Source0:	http://fedorahosted.org/releases/f/i/%{name}/%{name}-%{version}.tar.bz2
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: 	openssl-devel >= 0.9.8j
+
+%global soversion 1.1.0
+%global somajor 1
 
 %description
 FIPSCheck is a library for integrity verification of FIPS validated
@@ -42,7 +45,7 @@ This package contains development files for %{name}.
 %setup -q
 
 %build
-%configure --disable-static
+%configure --disable-static --libdir=/%{_lib}
 
 make %{?_smp_mflags}
 
@@ -52,8 +55,8 @@ make %{?_smp_mflags}
     %{__arch_install_post} \
     %{__os_install_post} \
     $RPM_BUILD_ROOT%{_bindir}/fipshmac $RPM_BUILD_ROOT%{_bindir}/fipscheck \
-    $RPM_BUILD_ROOT%{_bindir}/fipshmac $RPM_BUILD_ROOT%{_libdir}/libfipscheck.so.1.1.0 \
-    ln -s .libfipscheck.so.1.1.0.hmac $RPM_BUILD_ROOT%{_libdir}/.libfipscheck.so.1.hmac \
+    $RPM_BUILD_ROOT%{_bindir}/fipshmac $RPM_BUILD_ROOT/%{_lib}/libfipscheck.so.%{soversion} \
+    ln -s .libfipscheck.so.%{soversion}.hmac $RPM_BUILD_ROOT/%{_lib}/.libfipscheck.so.%{somajor}.hmac \
 %{nil}
 
 %install
@@ -62,6 +65,10 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 find $RPM_BUILD_ROOT -type f -name "*.la" -delete
+
+mkdir -p $RPM_BUILD_ROOT%{_libdir}
+ln -s  /%{_lib}/libfipscheck.so.%{soversion} $RPM_BUILD_ROOT%{_libdir}/libfipscheck.so
+rm $RPM_BUILD_ROOT/%{_lib}/libfipscheck.so
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -79,8 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files lib
 %defattr(-,root,root,-)
-%{_libdir}/libfipscheck.so.*
-%{_libdir}/.libfipscheck.so.*
+/%{_lib}/libfipscheck.so.*
+/%{_lib}/.libfipscheck.so.*
 
 %files devel
 %defattr(-,root,root,-)
@@ -88,6 +95,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libfipscheck.so
 
 %changelog
+* Thu Jan 20 2011 Tomas Mraz <tmraz@redhat.com> - 1.2.0-5
+- move library to /lib so the binaries needed when /usr might
+  not be mounted can link to it (#669077)
+
 * Tue Nov 24 2009 Dennis Gregorovic <dgregor@redhat.com> - 1.2.0-4.1
 - Rebuilt for RHEL 6
 
