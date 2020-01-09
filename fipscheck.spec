@@ -1,7 +1,7 @@
 Summary:	A library for integrity verification of FIPS validated modules
 Name:		fipscheck
 Version:	1.2.0
-Release:	5%{?dist}
+Release:	7%{?dist}
 License:	BSD
 Group:		System Environment/Libraries
 # This is a Red Hat maintained package which is specific to
@@ -12,6 +12,7 @@ Source0:	http://fedorahosted.org/releases/f/i/%{name}/%{name}-%{version}.tar.bz2
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: 	openssl-devel >= 0.9.8j
+Requires:	%{name}-lib = %{version}-%{release}
 
 %global soversion 1.1.0
 %global somajor 1
@@ -47,7 +48,7 @@ This package contains development files for %{name}.
 %build
 %configure --disable-static --libdir=/%{_lib}
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} LDFLAGS="-Wl,-z,relro"
 
 # Add generation of HMAC checksums of the final stripped binaries
 %define __spec_install_post \
@@ -95,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libfipscheck.so
 
 %changelog
+* Mon Aug 15 2011 Tomas Mraz <tmraz@redhat.com> - 1.2.0-7
+- add relro to LDFLAGS (#727277)
+
 * Thu Jan 20 2011 Tomas Mraz <tmraz@redhat.com> - 1.2.0-5
 - move library to /lib so the binaries needed when /usr might
   not be mounted can link to it (#669077)
