@@ -1,7 +1,7 @@
 Summary:	A library for integrity verification of FIPS validated modules
 Name:		fipscheck
 Version:	1.4.1
-Release:	5%{?dist}
+Release:	6%{?dist}
 License:	BSD
 Group:		System Environment/Libraries
 # This is a Red Hat maintained package which is specific to
@@ -10,6 +10,7 @@ URL:		http://fedorahosted.org/fipscheck/
 Source0:	http://fedorahosted.org/releases/f/i/%{name}/%{name}-%{version}.tar.bz2
 # Prelink blacklist
 Source1:	fipscheck.conf
+Patch1:		fipscheck-1.4.1-empty-hmac.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -42,6 +43,7 @@ This package contains development files for %{name}.
 
 %prep
 %setup -q
+%patch1 -p1 -b .empty-hmac
 
 %build
 %configure --disable-static
@@ -101,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Tue Feb 21 2017 Tomáš Mráz <tmraz@redhat.com> - 1.4.1-6
+- handle empty hmac file as checksum mismatch
+
 * Mon Feb 10 2014 Tomáš Mráz <tmraz@redhat.com> - 1.4.1-5
 - fix the library path in prelink blacklist
 

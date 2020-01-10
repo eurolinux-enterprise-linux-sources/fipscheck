@@ -1,0 +1,50 @@
+diff -up fipscheck-1.4.1/src/fipscheck.c.empty-hmac fipscheck-1.4.1/src/fipscheck.c
+--- fipscheck-1.4.1/src/fipscheck.c.empty-hmac	2013-09-10 10:54:30.000000000 +0200
++++ fipscheck-1.4.1/src/fipscheck.c	2017-02-21 14:30:27.616371594 +0100
+@@ -34,13 +34,15 @@
+ #include "filehmac.h"
+ #include "fipscheck.h"
+ 
++#define MAX_HMAC_LEN 1024
++
+ static int
+ verify_hmac(const char *path, const char *hmac_suffix)
+ {
+ 	FILE *hf = NULL;
+ 	char *hmacpath, *p;
+-	int rv = 0;
+-	char *hmac = NULL;
++	int rv = 1;
++	char hmac[MAX_HMAC_LEN];
+ 	size_t n;
+ 	const char *hmacdir = PATH_HMACDIR;
+ 
+@@ -62,7 +64,7 @@ verify_hmac(const char *path, const char
+ 		hmacdir = NULL;
+ 	} while (hf == NULL);
+ 
+-	if (getline(&hmac, &n, hf) > 0) {
++	if (fgets(hmac, sizeof(hmac), hf) != NULL) {
+ 		void *buf;
+ 		size_t hmaclen;
+ 		char *hex;
+@@ -84,14 +86,17 @@ verify_hmac(const char *path, const char
+ 
+ 		if (strcmp(hex, hmac) != 0) {
+ 			debug_log("Hmac mismatch on file '%s'", path);
+-			rv = 1;
++		} else {
++			/* checksum matched */
++			rv = 0;
+ 		}
+ 		free(buf);
+ 		free(hex);
++	} else {
++		debug_log("Empty or broken hmac on file '%s'", path);
+ 	}
+ 
+ end:
+-	free(hmac);
+ 	fclose(hf);
+ 	return rv;
+ }
