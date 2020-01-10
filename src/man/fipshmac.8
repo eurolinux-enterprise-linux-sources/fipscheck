@@ -1,0 +1,82 @@
+'\" t
+.\"     Title: fipshmac
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: April 11, 2012
+.\"    Manual: fipshmac
+.\"    Source: fipscheck
+.\"  Language: English
+.\"
+.TH "FIPSHMAC" "8" "April 11, 2012" "fipscheck" "fipshmac"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+fipshmac \- create FIPS\-140\-2 validation checksum files
+.SH "SYNTAX"
+.PP
+fipshmac [\fB\-d\fR
+<\fIdirectory\fR>] file1 [file2 \&.\&.\&.]
+.SH "DESCRIPTION"
+.PP
+fipshmac will create FIPS\-140\-2 checksum files for all the filenames specified\&. If the \-d option is not specified, checksum files will be written in the same directory as the file being checksummed\&. It will prepend a \*(Aq\&.\*(Aq and append \*(Aq\&.hmac\*(Aq to the original file name\&. When a directory is specified with the
+\fB\-d\fR
+option, the \*(Aq\&.\*(Aq will not be prepended and the files are stored into the directory\&.
+.PP
+If invoked correctly the fipshmac command will not print anything to the standard output or error\&. Otherwise it will print an error message to stderr\&.
+.PP
+The
+\fB\-s\fR
+option allows to specify the suffix of the hmac file names\&. The default value
+\fI\&.hmac\fR
+is used when this option is not specified\&.
+.SH "RETURN CODES"
+.PP
+fipscheck can return the following return codes:
+.PP
+0 OK
+.PP
+2 Missing filename
+.PP
+3 Cannot open the checksum file for writing
+.PP
+4 Cannot read the file to be checksummed, or the checksum computation failed
+.PP
+5 Memory allocation error
+.PP
+6,7 Cannot write to the checksum file
+.SH "SEE ALSO"
+.PP
+\fBfipscheck\fR(8),
+\fBfipscheck.h\fR(3),
+\m[blue]\fBhttps://fedorahosted\&.org/fipscheck/\fR\m[]
+.SH "AUTHOR"
+.PP
+Tomas Mraz <tmraz@redhat\&.com>\&.
+.PP
+Man page by Paul Wouters <pwouters@redhat\&.com>
+.SH "COPYRIGHT"
+.PP
+Copyright 2008, 2012 Red Hat, Inc\&. All rights reserved\&.
+.PP
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+.PP
+1\&. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer\&.
+.PP
+2\&. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution\&.
